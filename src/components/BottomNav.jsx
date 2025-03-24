@@ -45,7 +45,7 @@ const BottomNav = () => {
       id='new'
       ref={newButtonRef}
         className="transition-transform"
-        // onClick={}
+        onClick={()=>document.getElementById('new-prayer').showModal()}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -90,7 +90,26 @@ const BottomNav = () => {
         </svg>
         <span className="btm-nav-label">History</span>
       </NavLink>
+
+
+{/* hidden dialogue for new prayer */}
+      <dialog id="new-prayer" className="modal">
+  <div className="modal-box">
+    <h3 className="text-lg font-bold">New Prayer Request</h3>
+    <p className="py-4">Please enter your new prayer request info here</p>
+    <div className="modal-action">
+      <form method="dialog">
+     
+        <button className="mx-2 btn">Close</button>
+        <button className="mx-2 btn">Save</button>
+
+      </form>
     </div>
+  </div>
+</dialog>
+    </div>
+
+    
   );
 };
 

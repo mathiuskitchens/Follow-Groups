@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from 'react-router'
 import Layout from './components/Layouts/Layout.jsx'
 import History from './components/History.jsx'
 import { SupabaseProvider } from './context/SupabaseContext.jsx'
+import Profile from './components/Profile.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -17,6 +18,7 @@ createRoot(document.getElementById('root')).render(
     <Route path='/' element={<Layout />} >
       <Route index element={<Home />} />
       <Route path='history' element={<History />} />
+      <Route path='profile' element={<Profile />} />
     </Route>
 
     </Routes>

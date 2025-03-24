@@ -13,7 +13,7 @@ export default {
     daisyui,
   ],
   daisyui: {
-    themes: ["light"]
+    themes: ["lemonade"]
   }
 }
 

@@ -1,6 +1,8 @@
 import { HistorySkeleton } from './Skeletons';
 import { useSupabase } from '../context/SupabaseContext';
 import { useEffect, useState } from 'react';
+import { getPrayersByUserId } from '../services/supabase';
+import PrayerCard from '../components/PrayerCard'
 
 const History = () => {
   const supabase = useSupabase();
@@ -9,6 +11,7 @@ const History = () => {
   const [email, setEmail] = useState('');
   const [id, setId] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [myPrayers, setMyPrayers] = useState([])
 
   async function getUser(id) {
     const { data, error } = await supabase.from('profiles').select("*").eq("id", id)
@@ -37,6 +40,9 @@ const History = () => {
           const userInfo = await getUser(data.session.user.id)
           setName(userInfo.name)
           console.log(userInfo)
+          const prayers = await getPrayersByUserId(data.session.user.id)
+          console.log(prayers.data)
+          setMyPrayers(prayers.data)
         
 
       } else {
@@ -56,12 +62,20 @@ const History = () => {
 
   return (
     <>
-      <h1>{}</h1>
-      {loading ? 
+        {/* <h1 className="flex justify-center my-4 text-xl">Welcome back {name}</h1> */}
+        {loading ? 
         <HistorySkeleton /> : 
         <>
-        <h1 className="flex justify-center my-4 text-xl">Welcome back {name}</h1>
-        <HistorySkeleton />
+        {myPrayers.length > 0 ? 
+        <>
+      <h1 className="flex justify-center my-4 text-xl">My Prayers</h1>
+      {myPrayers.map((p) => (
+          <PrayerCard key={p.id} prayer={p} />
+        ))}
+        </>
+      : 
+      <>No prayers</>
+      }
         </>
         }
     </>

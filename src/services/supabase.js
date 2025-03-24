@@ -28,19 +28,31 @@ export const getPrayersByUserId = async (userId) => {
   }
 };
 
-// Prayers by groupID
+// Prayers by groupID with profile name
 export const getPrayersByGroupId = async (groupId) => {
   try {
     const { data, error } = await supabase
       .from('Prayers')
-      .select('*')
+      .select(`
+        *,
+        profiles (
+          name
+        )
+      `)
       .eq('groupId', groupId);
     
     if (error) {
       throw error;
     }
     
-    return { data };
+    // Flatten the profiles data into the prayer objects
+    const formattedData = data.map(prayer => ({
+      ...prayer,
+      profileName: prayer.profiles ? prayer.profiles.name : null,
+      profiles: undefined, // Remove the original profiles object
+    }));
+    
+    return { data: formattedData };
   } catch (error) {
     console.error('Error fetching prayers:', error);
     return { error };

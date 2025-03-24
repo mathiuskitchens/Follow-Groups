@@ -12,27 +12,24 @@ const Home = () => {
   const [userId, setUserId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [currentPrayerGroupInfo, setCurrentPrayerGroupInfo] = useState({
-    name: "", 
-    id: "",
-  })
-  const [currentPrayersList, setCurrentPrayersList] = useState([])
+    name: '',
+    id: '',
+  });
+  const [currentPrayersList, setCurrentPrayersList] = useState([]);
   const [myGroups, setMyGroups] = useState([{}]);
-  const [currentScreen, setCurrentScreen] = useState("Home")
-
+  const [currentScreen, setCurrentScreen] = useState('Home');
 
   const fetchAllGroups = async () => {
     console.log('Current userId before fetching groups:', userId);
     const response = await getGroupsForUser(userId);
     console.log('Full response from getGroupsForUser:', response);
-    
-    if (response.error) {
-      console.log('Error fetching groups:', response.error)
-    }
-    else {
-      console.log('Groups data received:', response.data);
-      setMyGroups(response.data)
-    }
 
+    if (response.error) {
+      console.log('Error fetching groups:', response.error);
+    } else {
+      console.log('Groups data received:', response.data);
+      setMyGroups(response.data);
+    }
   };
 
   useEffect(() => {
@@ -47,7 +44,7 @@ const Home = () => {
         console.log('loading:', loading, 'session: ', session);
       } else {
         console.log('no session');
-        setLoading(false)
+        setLoading(false);
       }
     });
   }, []);
@@ -69,10 +66,10 @@ const Home = () => {
   }, []);
 
   const fetchPrayersForList = async (groupId) => {
-    const result = await getPrayersByGroupId(groupId)
-    console.log(result)
-    setCurrentPrayersList(result.data)
-  }
+    const result = await getPrayersByGroupId(groupId);
+    console.log(result);
+    setCurrentPrayersList(result.data);
+  };
 
   if (loading) {
     return <HomeSkeleton />;
@@ -82,29 +79,30 @@ const Home = () => {
     return <Auth supabaseClient={supabase} appearance={{ theme: ThemeSupa }} />;
   }
 
-  if (currentScreen == "Home") {
+  if (currentScreen == 'Home') {
     return (
       <>
-        <h1 className="flex justify-center my-4 text-xl">My Groups</h1>
-        <ul className=''>
+        <h1 className="flex justify-center my-4 text-xl">My Prayer Groups</h1>
+        <ul className="">
           {myGroups.map((g) => (
-            <button 
-            onClick={() => {
-              setCurrentPrayerGroupInfo({
-                name: g.group_name,
-                id: g.group_id
-              })
-              fetchPrayersForList(g.group_id)
-              setCurrentScreen("Prayers")
-              // document.getElementById('my_modal_1').showModal()
-            }}
-            key={g.group_id} className='w-5/6 p-4 mx-8 my-2 text-lg rounded-lg bg-base-200'>
+            <button
+              onClick={() => {
+                setCurrentPrayerGroupInfo({
+                  name: g.group_name,
+                  id: g.group_id,
+                });
+                fetchPrayersForList(g.group_id);
+                setCurrentScreen('Prayers');
+                // document.getElementById('my_modal_1').showModal()
+              }}
+              key={g.group_id}
+              className="w-5/6 p-4 mx-8 my-2 text-lg rounded-lg bg-base-200 hover:bg-base-300"
+            >
               <h1>{g.group_name}</h1>
             </button>
           ))}
         </ul>
-  
-        
+
         {/* <dialog id="my_modal_1" className="modal">
         <div className="modal-box">
           <h3 className="text-lg font-bold">{currentPrayerGroupInfo.name}</h3>
@@ -122,23 +120,27 @@ const Home = () => {
       </>
     );
   }
-  if (currentScreen == "Prayers") {
+  if (currentScreen == 'Prayers') {
     return (
       <>
-        <h1>Prayers from {currentPrayerGroupInfo.name}</h1>
-        <ul className='m-2'>
+        <div className="m-4 text-sm breadcrumbs">
+          <ul>
+            <li>
+              <a onClick={()=>setCurrentScreen("Home")}>Groups</a>
+            </li>
+            <li>
+              <a>{currentPrayerGroupInfo.name}</a>
+            </li>
+          </ul>
+        </div>
+        <ul className="m-2 mb-20">
           {currentPrayersList.map((p) => (
-            <PrayerCard key={p.id} prayer={p}/>
-            // <li key={p.id}>
-            //   <p>{p.prayer_text}</p>
-            // </li>
+            <PrayerCard key={p.id} prayer={p} />
           ))}
         </ul>
       </>
     );
   }
-
-
 };
 
 export default Home;
