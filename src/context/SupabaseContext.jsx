@@ -1,16 +1,10 @@
 import { createContext, useContext } from 'react';
-import { createClient } from '@supabase/supabase-js';
-
-const supabaseUrl = import.meta.env.VITE_SUPA_PROJECT;
-const supabaseAnonKey = import.meta.env.VITE_SUPA_KEY;
+import { supabase } from '../services/supabase';
 
 // Validate environment variables
-if (!supabaseUrl || !supabaseAnonKey) {
+if (!import.meta.env.VITE_SUPA_PROJECT || !import.meta.env.VITE_SUPA_KEY) {
   throw new Error('Missing Supabase environment variables');
 }
-
-// Create the Supabase client once outside of components
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // Initialize context with null instead of the client
 const SupabaseContext = createContext(null);

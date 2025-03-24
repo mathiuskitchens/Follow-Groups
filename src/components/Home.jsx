@@ -3,29 +3,36 @@ import { useEffect, useState } from 'react';
 import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { useSupabase } from '../context/SupabaseContext';
+import { getGroupsForUser, getPrayersByGroupId } from '../services/supabase';
+import PrayerCard from './PrayerCard';
 
 const Home = () => {
   const supabase = useSupabase();
   const [session, setSession] = useState(null);
   const [userId, setUserId] = useState(null);
-  const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(true);
-  const [myPrayers, setMyPrayers] = useState([{}]);
+  const [currentPrayerGroupInfo, setCurrentPrayerGroupInfo] = useState({
+    name: "", 
+    id: "",
+  })
+  const [currentPrayersList, setCurrentPrayersList] = useState([])
+  const [myGroups, setMyGroups] = useState([{}]);
+  const [currentScreen, setCurrentScreen] = useState("Home")
+
 
   const fetchAllGroups = async () => {
-    try {
-      const { data, error } = await supabase.from('Prayers').select('*');
-      console.log(data);
-      if (error) {
-        console.error('Error fetching prayers:', error)
-      } else {
-        setMyPrayers(data);
-      }
-    } catch (e) {
-      console.log(e);
-    } finally {
-      console.log('DONE');
+    console.log('Current userId before fetching groups:', userId);
+    const response = await getGroupsForUser(userId);
+    console.log('Full response from getGroupsForUser:', response);
+    
+    if (response.error) {
+      console.log('Error fetching groups:', response.error)
     }
+    else {
+      console.log('Groups data received:', response.data);
+      setMyGroups(response.data)
+    }
+
   };
 
   useEffect(() => {
@@ -36,17 +43,22 @@ const Home = () => {
         console.log(session);
         setSession(session);
         setUserId(session.user.id);
-        setEmail(session.user.user_metadata.email);
         setLoading(false);
         console.log('loading:', loading, 'session: ', session);
       } else {
         console.log('no session');
+        setLoading(false)
       }
     });
+  }, []);
 
-    fetchAllGroups();
-    console.log("myPrayers", myPrayers)
+  useEffect(() => {
+    if (userId) {
+      fetchAllGroups();
+    }
+  }, [userId]);
 
+  useEffect(() => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -56,34 +68,77 @@ const Home = () => {
     return () => subscription.unsubscribe();
   }, []);
 
-  if (!session && !loading) {
+  const fetchPrayersForList = async (groupId) => {
+    const result = await getPrayersByGroupId(groupId)
+    console.log(result)
+    setCurrentPrayersList(result.data)
+  }
+
+  if (loading) {
+    return <HomeSkeleton />;
+  }
+
+  if (!session) {
     return <Auth supabaseClient={supabase} appearance={{ theme: ThemeSupa }} />;
-  } else {
+  }
+
+  if (currentScreen == "Home") {
     return (
       <>
-        <h1 className="flex justify-center my-4 text-xl">Hello {email}!</h1>
-        {loading ? (
-         <HomeSkeleton /> ) : 
-          (
-            <ul className=''>
-              {myPrayers.map((p) => (
-                <li key={p.id} className='mx-4 rounded-lg text-md bg-base-200'>
-                  <p>{p.date}</p>
-                  
-                  <p style={{ textDecoration: p.answered ? 'line-through' : 'none'}}>{p.prayer_text}</p>
-                  <input 
-                  type='checkbox'
-                  checked={p.answered}
-                  onChange={() => console.log(p.answered)}
-                  />
-                </li>
-              ))}
-            </ul>
-          )
-         }
+        <h1 className="flex justify-center my-4 text-xl">My Groups</h1>
+        <ul className=''>
+          {myGroups.map((g) => (
+            <button 
+            onClick={() => {
+              setCurrentPrayerGroupInfo({
+                name: g.group_name,
+                id: g.group_id
+              })
+              fetchPrayersForList(g.group_id)
+              setCurrentScreen("Prayers")
+              // document.getElementById('my_modal_1').showModal()
+            }}
+            key={g.group_id} className='w-5/6 p-4 mx-8 my-2 text-lg rounded-lg bg-base-200'>
+              <h1>{g.group_name}</h1>
+            </button>
+          ))}
+        </ul>
+  
+        
+        {/* <dialog id="my_modal_1" className="modal">
+        <div className="modal-box">
+          <h3 className="text-lg font-bold">{currentPrayerGroupInfo.name}</h3>
+          <p className="py-4">Group ID: {currentPrayerGroupInfo.id}</p>
+          <div className="modal-action">
+            <form method="dialog">
+          
+              <button className="btn">Close</button>
+            </form>
+          </div>
+        </div>
+      </dialog>
+    
+   */}
       </>
     );
   }
+  if (currentScreen == "Prayers") {
+    return (
+      <>
+        <h1>Prayers from {currentPrayerGroupInfo.name}</h1>
+        <ul className='m-2'>
+          {currentPrayersList.map((p) => (
+            <PrayerCard key={p.id} prayer={p}/>
+            // <li key={p.id}>
+            //   <p>{p.prayer_text}</p>
+            // </li>
+          ))}
+        </ul>
+      </>
+    );
+  }
+
+
 };
 
 export default Home;
