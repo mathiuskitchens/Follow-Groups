@@ -69,9 +69,11 @@ const History = () => {
         {myPrayers.length > 0 ? 
         <>
       <h1 className="flex justify-center my-4 text-xl">My Prayers</h1>
+      <ul className='mb-20'>
       {myPrayers.map((p) => (
           <PrayerCard key={p.id} prayer={p} />
         ))}
+        </ul>
         </>
       : 
       <>No prayers</>

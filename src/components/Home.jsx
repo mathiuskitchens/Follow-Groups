@@ -53,7 +53,7 @@ const Home = () => {
     if (userId) {
       fetchAllGroups();
     }
-  }, [userId]);
+  }, [userId, session]);
 
   useEffect(() => {
     const {
