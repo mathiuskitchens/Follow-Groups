@@ -1,7 +1,12 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { NavLink } from 'react-router';
+import NewPrayer from './modals/NewPrayer';
+import { useSupabase } from "../context/SupabaseContext";
 
 const BottomNav = () => {
+  const supabase = useSupabase();
+  const [isPrayerOpen, setIsPrayerOpen] = useState(false);
+  const [userId, setUserId] = useState(null);
 
   const newButtonRef = useRef(null);
 
@@ -16,6 +21,16 @@ const BottomNav = () => {
       });
     }
   }, [newButtonRef]);
+
+  useEffect(() => {
+    const fetchUserId = async () => {
+      const session = await supabase.auth.getSession();
+      if (session?.data?.session?.user?.id) {
+        setUserId(session.data.session.user.id);
+      }
+    };
+    fetchUserId();
+  }, [supabase]);
 
   return (
     <div className="btm-nav">
@@ -45,7 +60,8 @@ const BottomNav = () => {
       id='new'
       ref={newButtonRef}
         className="transition-transform"
-        onClick={()=>document.getElementById('new-prayer').showModal()}
+       // onClick={()=>document.getElementById('new-prayer').showModal()}
+       onClick={() => setIsPrayerOpen(true)}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -93,20 +109,11 @@ const BottomNav = () => {
 
 
 {/* hidden dialogue for new prayer */}
-      <dialog id="new-prayer" className="modal">
-  <div className="modal-box">
-    <h3 className="text-lg font-bold">New Prayer Request</h3>
-    <p className="py-4">Please enter your new prayer request info here</p>
-    <div className="modal-action">
-      <form method="dialog">
-     
-        <button className="mx-2 btn">Close</button>
-        <button className="mx-2 btn">Save</button>
 
-      </form>
-    </div>
-  </div>
-</dialog>
+{isPrayerOpen && (
+  <NewPrayer onClose={() => setIsPrayerOpen(false)} userId={userId} />
+)}
+
     </div>
 
     

@@ -96,27 +96,13 @@ const Home = () => {
                 // document.getElementById('my_modal_1').showModal()
               }}
               key={g.group_id}
-              className="w-5/6 p-4 mx-8 my-2 text-lg rounded-lg bg-base-200 hover:bg-base-300"
+              className="w-5/6 p-4 mx-8 my-2 text-lg text-white rounded-lg bg-neutral hover:bg-base-300"
             >
               <h1>{g.group_name}</h1>
             </button>
           ))}
         </ul>
 
-        {/* <dialog id="my_modal_1" className="modal">
-        <div className="modal-box">
-          <h3 className="text-lg font-bold">{currentPrayerGroupInfo.name}</h3>
-          <p className="py-4">Group ID: {currentPrayerGroupInfo.id}</p>
-          <div className="modal-action">
-            <form method="dialog">
-          
-              <button className="btn">Close</button>
-            </form>
-          </div>
-        </div>
-      </dialog>
-    
-   */}
       </>
     );
   }

@@ -94,3 +94,28 @@ export const getGroupsForUser = async (userId) => {
     return { error }; // Return error in consistent structure
   }
 };
+
+export const newPrayer = async (userId, prayerTitle, prayerText, groupId = null) => {
+  try {
+    const { data, error } = await supabase
+      .from('Prayers')
+      .insert([
+        {
+          userId,
+          title: prayerTitle,
+          prayer_text: prayerText,
+          groupId, // Include groupId
+          answered: false, // Default value for answered
+        },
+      ]);
+
+    if (error) {
+      throw error;
+    }
+
+    return { data };
+  } catch (error) {
+    console.error('Error adding prayer:', error);
+    return { error };
+  }
+};

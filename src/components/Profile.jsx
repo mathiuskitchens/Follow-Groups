@@ -58,7 +58,7 @@ const Profile = () => {
 
       <div className="flex justify-center mx-auto avatar">
         <div className="w-48 rounded-xl">
-          <img src="https://media.licdn.com/dms/image/v2/D5603AQG1BitDgYpEeQ/profile-displayphoto-shrink_400_400/B56ZUNOmfIGoAo-/0/1739683686740?e=1748476800&v=beta&t=Xt9msOwe8EDGYA7jQhvT1-NrOEg0Kf7IJJBgDs5AAwQ" />
+          <img src="https://media.licdn.com/dms/image/v2/D5603AQG1BitDgYpEeQ/profile-displayphoto-shrink_800_800/B56ZUNOmfIGoAk-/0/1739683686739?e=1754524800&v=beta&t=1LxsuojSYN33Yvx3H2ffdn-HIqEoArxFuaMF9IQKLm8" />
         </div>
       </div>
       <h3 className='m-6 text-center'>Total Prayers: 12</h3>

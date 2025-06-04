@@ -36,7 +36,7 @@ const TopNav = () => {
           <div className="w-10 rounded-full">
             <img
               alt="Tailwind CSS Navbar component"
-              src="https://media.licdn.com/dms/image/v2/D5603AQG1BitDgYpEeQ/profile-displayphoto-shrink_400_400/B56ZUNOmfIGoAo-/0/1739683686740?e=1748476800&v=beta&t=Xt9msOwe8EDGYA7jQhvT1-NrOEg0Kf7IJJBgDs5AAwQ"
+              src="https://media.licdn.com/dms/image/v2/D5603AQG1BitDgYpEeQ/profile-displayphoto-shrink_800_800/B56ZUNOmfIGoAk-/0/1739683686739?e=1754524800&v=beta&t=1LxsuojSYN33Yvx3H2ffdn-HIqEoArxFuaMF9IQKLm8"
             />
           </div>
         </div>
